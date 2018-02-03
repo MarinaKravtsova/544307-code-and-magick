@@ -19,19 +19,40 @@ removeHidden(userDialog.querySelector('.setup-similar'));
 var similarListElement = userDialog.querySelector('.setup-similar-list');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template').content;
 
-var wizardFunction = function () {
+var wizards = [];
 
+var generationRandomNumber = function (max, min) {
+  var RandomNumber = Math.floor(Math.random() * (max - min) + min);
+
+  return RandomNumber;
+};
+
+var wizardFunction = function () {
+  var wizard = {
+    name: wizardNames.splice(generationRandomNumber(wizardNames.length, 0), 1) + '   ' + wizardSurnames.splice(generationRandomNumber(wizardSurnames.length, 0), 1),
+    coatColor: coat.splice(generationRandomNumber(coat.length, 0), 1),
+    eyesColor: eyes.splice(generationRandomNumber(eyes.length, 0), 1)
+  };
+  return wizard;
+};
+
+var wizardsNumbers = 4;
+for (var y = 0; y < wizardsNumbers; y++) {
+  wizards[y] = wizardFunction();
+}
+
+var renderWizard = function (wizard) {
   var wizardElement = similarWizardTemplate.cloneNode(true);
 
-  wizardElement.querySelector('.setup-similar-label').textContent = wizardNames.splice(Math.floor(Math.random() * wizardNames.length), 1) + '   ' + wizardSurnames.splice(Math.floor(Math.random() * wizardSurnames.length), 1);
-  wizardElement.querySelector('.wizard-coat').style.fill = coat.splice(Math.floor(Math.random() * coat.length), 1);
-  wizardElement.querySelector('.wizard-eyes').style.fill = eyes.splice(Math.floor(Math.random() * eyes.length), 1);
+  wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
+  wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
+  wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
 
   return wizardElement;
 };
 
 var fragment = document.createDocumentFragment();
-for (var y = 0; y <= 3; y++) {
-  fragment.appendChild(wizardFunction());
+for (var i = 0; i < wizards.length; i++) {
+  fragment.appendChild(renderWizard(wizards[i]));
 }
 similarListElement.appendChild(fragment);
